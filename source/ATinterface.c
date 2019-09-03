@@ -38,8 +38,8 @@ sleepConfig_t sleepConfig =
 {
 	.sleepMode = modeDeepSleep,
 	.sleepCores = coresBoth,
-	.wakeUpPin = wakeUpPinOff,
-	.wakeUpTime = wakeUpDelay(0, 1, 0, 0)
+	.wakeUpPin = wakeUpPinHigh(false),
+	.wakeUpTime = wakeUpTimeOff
 };
 
 LoRaWAN_keys_t LoRaWAN_keys = 
@@ -48,9 +48,9 @@ LoRaWAN_keys_t LoRaWAN_keys =
 	.StoredKeys.KeyIndex = 0
 };
 
-//uint8_t	cmdState = 0;
 uint8_t	cmdIDX = 0;
 uint8_t	cmdBUF[255];
+uint8_t	txBUF[255];
 
 // Build AT command list, occurrences of 'partial duplicate commands' should come after the 'full command' eg: "RX" should come after "RX_LENGTH"
 const char* const ATcmdList[] = {
@@ -157,8 +157,6 @@ void outputResponse(response_t response, uint32_t errorValue)
             message = "Error 08: LoRaWAN system error 0x";
             break;
         case resp_core_isbusy:
-        //default:
-            //message = "Error FF: Unknown error";
             message = "Error 09: LoRaWAN is busy";
             break;
     }
@@ -169,7 +167,7 @@ void outputResponse(response_t response, uint32_t errorValue)
 
 response_t HEXtoBytes(char * source, uint8_t * dest, uint8_t byteSize)
 {
-    uint8_t cnt = 0;
+    uint8_t cnt;
     for(cnt = 0; cnt < byteSize; cnt++)
     {
         if (*source > 0x60) *source -= 0x20;        // Convert to uppercase
@@ -199,7 +197,7 @@ void coreResponse()
 void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
 {
     response_t retErr;
-    if(coreArguments.status.system.isBusy) outputResponse(resp_core_isbusy, 0);
+    if(coreArguments.status.system.isBusy) return outputResponse(resp_core_isbusy, 0);
     switch (command)
     {
         case cmd_ping:
@@ -231,7 +229,9 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             coreResponse(LoRaWAN_Join(false));
             break;
         case cmd_tx:
-            outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
+            length = (length - (cmdLength + 1)) >> 1;
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], (uint8_t *) &txBUF, length)) != resp_ok) return outputResponse(retErr, 0);
+            coreResponse(LoRaWAN_Send(&txBUF, length, false));
             break;
         case cmd_rxlength:
             outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);

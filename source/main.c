@@ -48,10 +48,7 @@ int main(void) // LP
 
 	Cy_SCB_UART_Init( UART_HW, &UART_config, NULL);
 	Cy_SCB_UART_Enable( UART_HW );
-	//Cy_SCB_UART_PutString(UART_HW, "Onethinx Core Module\r\n" );
-	//Cy_SCB_UART_PutString(UART_HW, "Welcome" );
 
-	uint32_t cmd;
 	while (1) {
 		ATcomm();
 		
