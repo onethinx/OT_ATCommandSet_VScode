@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "cycfg.h": "c",
+        "cycfg_pins.h": "c",
+        "cy_gpio.h": "c",
+        "onethinxcore01.h": "c",
+        "udbfitter.h": "c",
+        "stdio.h": "c",
+        "cy_ble.h": "c",
+        "cy_pdl.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}

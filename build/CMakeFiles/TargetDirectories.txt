@@ -1,0 +1,4 @@
+/Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/build/CMakeFiles/rebuild_cache.dir
+/Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/build/CMakeFiles/edit_cache.dir
+/Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/build/CMakeFiles/MyApp.dir
+/Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/build/CMakeFiles/MyApp.elf.dir
