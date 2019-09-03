@@ -49,40 +49,8 @@ int main(void) // LP
 	Cy_SCB_UART_Init( UART_HW, &UART_config, NULL);
 	Cy_SCB_UART_Enable( UART_HW );
 
-	while (1) {
-		ATcomm();
-		
-	}
+	while (1) ATcomm();
 	
-	// /* Initialise LoRaWAN Stack */
-	// statusLoRaWAN = LoRaWAN_Init(&coreConfig);
-
-
-	// statusLoRaWAN = LoRaWAN_GetStatus();
-
-
-	// LoRaWAN_GetInfo(&coreInfo);
-	
-	// /* Join LoRaWAN network */
-	// statusLoRaWAN = LoRaWAN_Join(true);
-	
-	// LED_B_SET(LED_ON);
-	
-	// /* checking if it has joined the LoRaWAN network, if not, RED LED will flash at 1Hz */
-	// if (!statusLoRaWAN.mac.isJoined)
-	// 	while (1)
-	// 	{
-	// 		LED_R_SET(LED_ON);
-	// 		CyDelay(1000);
-	// 		LED_R_SET(LED_OFF);
-	// 		CyDelay(1000);
-	// 	}
-	// LED_B_SET(LED_ON);
-	// CyDelay(4000);
-	// LED_B_SET(LED_OFF);
-	//  
-
-
 }
 
 

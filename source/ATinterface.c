@@ -86,8 +86,19 @@ typedef enum
 
 typedef enum
 {
+    lora_idle,
+    lora_joining,
+    lora_sending,
+} state_lora_t;
+
+state_lora_t loraState = lora_idle;
+
+typedef enum
+{
     resp_ok,
     resp_info,
+    resp_joining,
+    resp_sending,
     resp_invalidcmd,
     resp_invalidparam,
     resp_bufferoverflow,
@@ -131,6 +142,12 @@ void outputResponse(response_t response, uint32_t errorValue)
             break;
         case resp_info:
             message = "Hello this is the Onethinx Core Module";
+            break;
+        case resp_joining:
+            message = "joining...";
+            break;
+        case resp_sending:
+            message = "sending...";
             break;
         case resp_invalidcmd:
             message = "Error 01: AT command not found";
@@ -226,12 +243,16 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             outputResponse(resp_ok, 0);
             break;
         case cmd_join:
-            coreResponse(LoRaWAN_Join(false));
+            LoRaWAN_Join(false);
+            outputResponse(resp_joining, 0);
+            loraState = lora_joining;
             break;
         case cmd_tx:
             length = (length - (cmdLength + 1)) >> 1;
             if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], (uint8_t *) &txBUF, length)) != resp_ok) return outputResponse(retErr, 0);
-            coreResponse(LoRaWAN_Send(&txBUF, length, false));
+            LoRaWAN_Send(txBUF, length, false);
+            outputResponse(resp_sending, 0);
+            loraState = lora_sending;
             break;
         case cmd_rxlength:
             outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
@@ -249,8 +270,14 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
 
 }
 
+
 void ATcomm(void)
 {
+    if ((loraState != lora_idle) && (LoRaWAN_GetStatus().system.isBusy == false))
+    {
+        outputResponse(resp_ok, 0);
+        loraState = lora_idle;
+    }
     uint32_t cmd;
     if ((cmd = Cy_SCB_UART_Get(UART_HW)) == CY_SCB_UART_RX_NO_DATA) return;
     uint8_t RXbyte = (uint8_t) cmd;
