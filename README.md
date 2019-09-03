@@ -47,13 +47,14 @@ The following AT commands can be used with this AT commands firmware:
    
     ```AT+SET_OTAA 1 DE01020304050607 AE01020304050607 AA0102030405060708090A0B0C0D0E0F```
 
+
 - Send data over LoRaWAN
     - Data: "Hello World!" (hexadecimal = 48656c6c6f20576f726c6421)
     
     ```AT+TX 48656c6c6f20576f726c6421```
-    
+
+
 - Enter sleep mode
     - mode: Deep Sleep (1)
     
     ```AT+SLEEPMODE 1```
-
