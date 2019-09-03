@@ -2,7 +2,7 @@
 
 The following AT commands can be used with this AT commands firmware:
 
-| ﻿Command             | Response  | Description                          |
+| Command             | Response   | Description                          |
 |---------------------|------------|--------------------------------------|
 | AT                  | OK         | Ping                                 |
 | AT+INFO             | [info]     | Show the info of the module          |
@@ -36,3 +36,14 @@ The following AT commands can be used with this AT commands firmware:
     - 0: Hibernate
     - 1: Deep Sleep	
     - 2: Sleep
+    
+## Examples
+<sup>
+    
+| Command                                                                          | Description         |
+|----------------------------------------------------------------------------------|---------------------|
+| AT+SET_OTAA 1 DE01020304050607 AE01020304050607 AA0102030405060708090A0B0C0D0E0F | Set OTAA keys       |
+| AT+TX 48656c6c6f20576f726c6421                                                   | Send "Hello World!" |
+| AT+SLEEPMODE 1                                                                   | Go to Deep Sleep    |
+
+</sup>
