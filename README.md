@@ -40,7 +40,7 @@ The following AT commands can be used with this AT commands firmware:
 ## Examples
 
 - Set OTAA Keys
-    - Public network: true
+    - Public network: true (1)
     - DevEUI: DE01020304050607
     - AppEUI: AE01020304050607
     - AppKey: AA0102030405060708090A0B0C0D0E0F
