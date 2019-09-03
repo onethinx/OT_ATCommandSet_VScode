@@ -1,52 +1,19 @@
-# Library to use AT commands for the Onethinx Core LoRaWAN module
-
-1. Prerequisites
-    - VS Code
-        - https://code.visualstudio.com/download
-    - ModusToolbox 1.1 (for PDL, Device Configurator, CyMCUElfTool and OpenOCD)
-        - https://www.cypress.com/products/modustoolbox-software-environment
-    - GNU Arm Embedded Toolchain
-        - https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
-    - CMake
-        - https://cmake.org/download/
-    - Make
-        - depending on your OS (for Windows MinGW can be used, macOS homebrew GNU make)
-
-1. VS Code Extensions
-    - ARM Support For Visual Studio Code (dan-c-underwood)
-    - C/C++ IntelliSense, debugging (microsoft)
-    - CMake language support (twxs)
-    - CMake Tools (vector-of-bool)
-    - Cortex-Debug GDB support (marus25)
-    - LinkerScript support for GNU (Zixuan Wang)
-    - Open in Application (Fabio Spampinato)
-    - Output Colorizer (IBM)
-    
-1. Configure
-    - Command Palette (CTRL+SHIFT+P) > type: JSON > Click Preferences: Open Settings (JSON)
-    - Add the following lines to the VS Code User settings:
-    ```
-    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
-    "C_Cpp.default.compilerPath": "arm-none-eabi-gcc",
-    "C_Cpp.loggingLevel":"Debug",
-    // Location of the cmake executable
-    "cmake.cmakePath": "/Applications/CMake.app/Contents/bin/cmake",
-    //"cmake.cmakePath": "C:/Program Files/CMake/bin/cmake.exe",
-    // Location of the OpenOCD executable
-    "cortex-debug.openocdPath": "/Applications/ModusToolbox_1.1/tools/openocd-2.1/bin/openocd",
-    //"cortex-debug.openocdPath": "C:/ModusToolbox_1.1/tools/openocd-2.01/bin/openocd.exe",
-    // Location of the JLink GDB Server (if used)
-    "cortex-debug.JLinkGDBServerPath": "/Applications/SEGGER/JLink_V644f/JLinkGDBServerCLExe",
-    "cmake.configureOnOpen": true,
-    "cmake.sourceDirectory": "${workspaceRoot}"
-    ```
-1. Check
-    - if make is installed by typing 'make -v' into the terminal window of VS Code
-        (make needs to be added to the system's path variable)
-        
-1. Remind
-    - after changing the device configuration to use
-        - Clean Reconfigure
-        - Clean Rebuild
-        
-        in order to build the image properly.
+| ﻿Command                               | Response | Description                                 |                                                                                                                         |                        |                   | Example                                                                          | Description                 |
+|---------------------------------------|----------|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|------------------------|-------------------|----------------------------------------------------------------------------------|-----------------------------|
+| AT                                    | OK       | Ping                                        |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+INFO                               | [info]   | Show the info of the module                 |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+INIT                               | OK       | Initialize Stack                            |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+STATUS                             | [status] | Show the status of the module               |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+SET_OTAA [keys]                    | OK       | Set OTAA keys                               |                                                                                                                         |                        |                   | AT+SET_OTAA 1 DE01020304050607 AE01020304050607 AA0102030405060708090A0B0C0D0E0F |                             |
+| AT+JOIN                               | OK       | Join the LoRaWAN network                    |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+TX [data]                          | OK       |                                             |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+RX_LENGTH                          | [length] | Show amount of data in the RX buffer        |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+RX                                 | [data]   | Show received data                          |                                                                                                                         |                        |                   |                                                                                  |                             |
+| AT+SLEEPMODE [mode]                   | OK       | Set sleepmode                               | [mode] = 0: Hibernate                                                                                                   | [mode] = 1: Deep Sleep | [mode] = 2: Sleep | AT+SLEEPMODE 1                                                                   | Set Sleepmode to Deep Sleep |
+|                                       |          |                                             |                                                                                                                         |                        |                   |                                                                                  |                             |
+| Notes                                 |          |                                             |                                                                                                                         |                        |                   |                                                                                  |                             |
+| All commands are terminated by "\r\n" |          |                                             |                                                                                                                         |                        |                   |                                                                                  |                             |
+| Sleep IO:                             |          | low: enter sleep mode                       | high: wake up                                                                                                           |                        |                   |                                                                                  |                             |
+| UART settings:                        |          | 19200, 8, N, 1                              |                                                                                                                         |                        |                   |                                                                                  |                             |
+| All data in in Hexadecimal format     |          |                                             |                                                                                                                         |                        |                   |                                                                                  |                             |
+| [keys] format                         |          | [public network] [DevEUI] [AppEUI] [AppKey] | public network: 1 or 0 (1 for public network, 0 for private network), hexadecimal values for keys, <space> as separator |                        |                   |                                                                                  |                             |
