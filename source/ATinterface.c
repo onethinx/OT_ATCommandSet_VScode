@@ -38,7 +38,7 @@ sleepConfig_t sleepConfig =
 {
 	.sleepMode = modeDeepSleep,
 	.sleepCores = coresBoth,
-	.wakeUpPin = wakeUpPinHigh(false),
+	.wakeUpPin = wakeUpPinHigh(true),
 	.wakeUpTime = wakeUpTimeOff
 };
 
@@ -57,7 +57,6 @@ uint8_t	tmpBUFIDX = 0;
 const char* const ATcmdList[] = {
 	"PING",
 	"INFO",
-	"INIT",
 	"STATUS",
 	"SET_OTAA",
 	"JOIN",
@@ -74,7 +73,6 @@ typedef enum
 {
     cmd_ping,
     cmd_info,
-    cmd_init,
     cmd_status,
     cmd_set_otaa,
     cmd_join,
@@ -118,19 +116,19 @@ char * uint16toDecimalBuilder(uint16_t val, uint8_t idx)
     if (idx != (uint8_t) -1) tmpBUFIDX = idx;
     if (tmpBUFIDX > 246) return NULL;
     tmpBUF[tmpBUFIDX] = '0';
-    while (val > 10000) val -= 10000, tmpBUF[tmpBUFIDX]++;
+    while (val >= 10000) val -= 10000, tmpBUF[tmpBUFIDX]++;
     if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
     tmpBUFIDX += incr;
     tmpBUF[tmpBUFIDX] = '0';
-    while (val > 1000) val -= 1000, tmpBUF[tmpBUFIDX]++;
+    while (val >= 1000) val -= 1000, tmpBUF[tmpBUFIDX]++;
     if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
     tmpBUFIDX += incr;
     tmpBUF[tmpBUFIDX] = '0';
-    while (val > 100) val -= 100, tmpBUF[tmpBUFIDX]++;
+    while (val >= 100) val -= 100, tmpBUF[tmpBUFIDX]++;
     if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
     tmpBUFIDX += incr;
     tmpBUF[tmpBUFIDX] = '0';
-    while (val > 10) val -= 10, tmpBUF[tmpBUFIDX]++;
+    while (val >= 10) val -= 10, tmpBUF[tmpBUFIDX]++;
     if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
     tmpBUFIDX += incr;
     tmpBUF[tmpBUFIDX] = '0' + val;
@@ -206,17 +204,8 @@ void outputResponse(response_t response, uint32_t errorValue)
             uint32toHexBuilder(devEUI, -1);
             devEUI = __builtin_bswap32(*(uint32_t *) &coreInfo.devEUI[4]);
             uint32toHexBuilder(devEUI, -1);
-
             stringBuilder("\r\n: Version: ", -1);
             message = uint32toHexBuilder(coreStatus.system.version, -1);
-            /*
-            coreInfo.devEUI
-            coreInfo.buildType
-            coreInfo.stackRegion
-            coreInfo.stackOption
-            coreInfo.stackStage
-            */
-            //message = stringBuilder("\r\n", -1);
             break;
         case resp_joining:
             message = "joining...";
@@ -298,10 +287,6 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
         case cmd_info:
             outputResponse((length != cmdLength)? resp_invalidparam: resp_info, 0);
             break;
-        case cmd_init:
-            if (length != cmdLength) return outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
-            coreResponse(LoRaWAN_Init(&coreConfig));
-            break;
         case cmd_status:
             coreResponse();
             break;
@@ -336,7 +321,28 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
             break;
         case cmd_sleepmode:
-            outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
+            if ((length - cmdLength) != 2) {
+                outputResponse(resp_invalidparam, 0);
+                return;
+            }
+            switch (cmdBUF[cmdLength + 1])
+            {
+                case '0':
+                    sleepConfig.sleepMode = modeHibernate;
+                    break;
+                case '1':
+                    sleepConfig.sleepMode = modeDeepSleep;
+                    break;
+                case '2':
+                    sleepConfig.sleepMode = modeSleep;
+                    break;
+                default:
+                    outputResponse(resp_invalidparam, 0);
+                    return;
+                    
+            }
+            outputResponse(resp_ok, 0);
+            LoRaWAN_Sleep(&sleepConfig);
             break;
         case cmd_help:
             outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);

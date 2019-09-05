@@ -6,7 +6,6 @@ The following AT commands can be used with this AT commands firmware:
 |---------------------|------------|--------------------------------------|
 | AT+PING             | OK         | Ping                                 |
 | AT+INFO             | [info]     | Show the info of the module          |
-| AT+INIT             | OK / Error | Initialize Stack                     |
 | AT+STATUS           | [status]   | Show the status of the module        |
 | AT+SET_OTAA [keys]  | OK / Error | Set OTAA keys                        |
 | AT+JOIN             | OK / Error | Join the LoRaWAN network             |
