@@ -4,7 +4,7 @@ The following AT commands can be used with this AT commands firmware:
 
 | Command             | Response   | Description                          |
 |---------------------|------------|--------------------------------------|
-| AT                  | OK         | Ping                                 |
+| AT+PING             | OK         | Ping                                 |
 | AT+INFO             | [info]     | Show the info of the module          |
 | AT+INIT             | OK / Error | Initialize Stack                     |
 | AT+STATUS           | [status]   | Show the status of the module        |

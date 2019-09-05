@@ -50,7 +50,8 @@ LoRaWAN_keys_t LoRaWAN_keys =
 
 uint8_t	cmdIDX = 0;
 uint8_t	cmdBUF[255];
-uint8_t	txBUF[255];
+uint8_t	tmpBUF[255];
+uint8_t	tmpBUFIDX = 0;
 
 // Build AT command list, occurrences of 'partial duplicate commands' should come after the 'full command' eg: "RX" should come after "RX_LENGTH"
 const char* const ATcmdList[] = {
@@ -86,12 +87,13 @@ typedef enum
 
 typedef enum
 {
+    lora_start,
     lora_idle,
     lora_joining,
     lora_sending,
 } state_lora_t;
 
-state_lora_t loraState = lora_idle;
+state_lora_t loraState = lora_start;
 
 typedef enum
 {
@@ -110,26 +112,66 @@ typedef enum
     resp_core_isbusy
 } response_t;
 
-char uint32HEX[8];
-char * UINT32toHEX(uint32_t val)
+char * uint16toDecimalBuilder(uint16_t val, uint8_t idx)
 {
-    uint32HEX[0] = (val >> 28) & 0x0F;
-    uint32HEX[0] += (uint32HEX[0] > 9)? 55 : '0';
-    uint32HEX[1] = (val >> 24) & 0x0F;
-    uint32HEX[1] += (uint32HEX[1] > 9)? 55 : '0';
-    uint32HEX[2] = (val >> 20) & 0x0F;
-    uint32HEX[2] += (uint32HEX[2] > 9)? 55 : '0';
-    uint32HEX[3] = (val >> 16) & 0x0F;
-    uint32HEX[3] += (uint32HEX[3] > 9)? 55 : '0';
-    uint32HEX[4] = (val >> 12) & 0x0F;
-    uint32HEX[4] += (uint32HEX[4] > 9)? 55 : '0';
-    uint32HEX[5] = (val >> 8) & 0x0F;
-    uint32HEX[5] += (uint32HEX[5] > 9)? 55 : '0';
-    uint32HEX[6] = (val >> 4) & 0x0F;
-    uint32HEX[6] += (uint32HEX[6] > 9)? 55 : '0';
-    uint32HEX[7] = (val >> 0) & 0x0F;
-    uint32HEX[7] += (uint32HEX[7] > 9)? 55 : '0';
-    return uint32HEX;
+    uint8_t incr = 0;
+    if (idx != (uint8_t) -1) tmpBUFIDX = idx;
+    if (tmpBUFIDX > 246) return NULL;
+    tmpBUF[tmpBUFIDX] = '0';
+    while (val > 10000) val -= 10000, tmpBUF[tmpBUFIDX]++;
+    if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
+    tmpBUFIDX += incr;
+    tmpBUF[tmpBUFIDX] = '0';
+    while (val > 1000) val -= 1000, tmpBUF[tmpBUFIDX]++;
+    if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
+    tmpBUFIDX += incr;
+    tmpBUF[tmpBUFIDX] = '0';
+    while (val > 100) val -= 100, tmpBUF[tmpBUFIDX]++;
+    if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
+    tmpBUFIDX += incr;
+    tmpBUF[tmpBUFIDX] = '0';
+    while (val > 10) val -= 10, tmpBUF[tmpBUFIDX]++;
+    if (tmpBUF[tmpBUFIDX] != '0') incr = 1;
+    tmpBUFIDX += incr;
+    tmpBUF[tmpBUFIDX] = '0' + val;
+    tmpBUF[++tmpBUFIDX] = 0;
+    return tmpBUF;
+}
+
+char * uint32toHexBuilder(uint32_t val, uint8_t idx)
+{
+    if (idx != (uint8_t) -1) tmpBUFIDX = idx;
+    if (tmpBUFIDX > 246) return NULL;
+    tmpBUF[tmpBUFIDX] = (val >> 28) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 24) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 20) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 16) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 12) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 8) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 4) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = (val >> 0) & 0x0F;
+    tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    tmpBUF[++tmpBUFIDX] = 0;
+    return tmpBUF;
+}
+
+char * stringBuilder(char* string, uint8_t idx)
+{
+    if (idx != (uint8_t) -1) tmpBUFIDX = idx;
+    for (; tmpBUFIDX < 255; tmpBUFIDX)
+    {
+        if (* string == 0) break;
+        tmpBUF[tmpBUFIDX++] = * string++;
+    }
+    tmpBUF[tmpBUFIDX] = 0;
+    return tmpBUF;
 }
 
 void outputResponse(response_t response, uint32_t errorValue)
@@ -141,7 +183,40 @@ void outputResponse(response_t response, uint32_t errorValue)
             message = "OK";
             break;
         case resp_info:
-            message = "Hello this is the Onethinx Core Module";
+            coreStatus = LoRaWAN_GetInfo(&coreInfo);
+            stringBuilder("--= Onethinx LoRaWAN Core OT-X18 =--\r\n: Type-Option-Stage-Region: ", 0);
+            stringBuilder((char[]) { coreInfo.buildType, '-', coreInfo.stackOption, '-', coreInfo.stackStage, '-', 0 }, -1);
+            uint16toDecimalBuilder(coreInfo.stackRegion, -1);
+            stringBuilder("\r\n: Build: ", -1);
+            uint16toDecimalBuilder(coreInfo.buildNumber, -1);
+            stringBuilder(" (20", -1);
+            uint16toDecimalBuilder(coreInfo.buildYear, -1);
+            stringBuilder("-", -1);
+            uint16toDecimalBuilder(coreInfo.buildMonth, -1);
+            stringBuilder("-", -1);
+            uint16toDecimalBuilder(coreInfo.buildDayOfMonth, -1);
+            stringBuilder(" ", -1);
+            uint16toDecimalBuilder(coreInfo.buildHour, -1);
+            stringBuilder(":", -1);
+            uint16toDecimalBuilder(coreInfo.buildMinute, -1);
+            stringBuilder(":", -1);
+            uint16toDecimalBuilder(coreInfo.buildSecond, -1);
+            stringBuilder(")\r\n: DevEUI: ", -1);
+            uint32_t devEUI = __builtin_bswap32(*(uint32_t *) &coreInfo.devEUI);
+            uint32toHexBuilder(devEUI, -1);
+            devEUI = __builtin_bswap32(*(uint32_t *) &coreInfo.devEUI[4]);
+            uint32toHexBuilder(devEUI, -1);
+
+            stringBuilder("\r\n: Version: ", -1);
+            message = uint32toHexBuilder(coreStatus.system.version, -1);
+            /*
+            coreInfo.devEUI
+            coreInfo.buildType
+            coreInfo.stackRegion
+            coreInfo.stackOption
+            coreInfo.stackStage
+            */
+            //message = stringBuilder("\r\n", -1);
             break;
         case resp_joining:
             message = "joining...";
@@ -178,7 +253,7 @@ void outputResponse(response_t response, uint32_t errorValue)
             break;
     }
     Cy_SCB_UART_PutString(UART_HW, message);
-    if (errorValue != 0) Cy_SCB_UART_PutString(UART_HW, UINT32toHEX(errorValue));
+    if (errorValue != 0) Cy_SCB_UART_PutString(UART_HW, uint32toHexBuilder(errorValue, 0));
     Cy_SCB_UART_PutString(UART_HW, "\r\n");
 }
 
@@ -249,8 +324,8 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             break;
         case cmd_tx:
             length = (length - (cmdLength + 1)) >> 1;
-            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], (uint8_t *) &txBUF, length)) != resp_ok) return outputResponse(retErr, 0);
-            LoRaWAN_Send(txBUF, length, false);
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], (uint8_t *) &tmpBUF, length)) != resp_ok) return outputResponse(retErr, 0);
+            LoRaWAN_Send(tmpBUF, length, false);
             outputResponse(resp_sending, 0);
             loraState = lora_sending;
             break;
@@ -273,6 +348,12 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
 
 void ATcomm(void)
 {
+    if (loraState == lora_start)
+    {
+        LoRaWAN_Init(&coreConfig);
+        outputResponse(resp_info, 0);
+        //loraState = lora_idle;
+    }
     if ((loraState != lora_idle) && (LoRaWAN_GetStatus().system.isBusy == false))
     {
         outputResponse(resp_ok, 0);
