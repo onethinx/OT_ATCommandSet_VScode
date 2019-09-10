@@ -7,7 +7,9 @@
         "udbfitter.h": "c",
         "stdio.h": "c",
         "cy_ble.h": "c",
-        "cy_pdl.h": "c"
+        "cy_pdl.h": "c",
+        "cycfg_platform.h": "c",
+        "type_traits": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

@@ -11230,6 +11230,7 @@ CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../design/GeneratedSource/cyc
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../design/GeneratedSource/cycfg_peripherals.h
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../design/GeneratedSource/cycfg_pins.h
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../design/GeneratedSource/cycfg_platform.h
+CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../source/DemoKit/Demokit01.h
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: ../source/OnethinxCore/OnethinxCore01.h
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: /Applications/ModusToolbox_1.1/libraries/psoc6sw-1.1/components/psoc6pdl/cmsis/include/cmsis_armcc.h
 CMakeFiles/MyApp.elf.dir/source/ATinterface.c.obj: /Applications/ModusToolbox_1.1/libraries/psoc6sw-1.1/components/psoc6pdl/cmsis/include/cmsis_armclang.h

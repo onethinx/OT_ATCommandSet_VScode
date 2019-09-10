@@ -56,6 +56,12 @@ cy_sysclk.h
 cy_ble_clk.h
 ../design/GeneratedSource/cy_ble_clk.h
 
+../source/DemoKit/Demokit01.h
+stdint.h
+-
+stdbool.h
+-
+
 ../source/OnethinxCore/OnethinxCore01.h
 stdint.h
 -
@@ -1545,6 +1551,8 @@ OnethinxCore01.h
 /Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/source/OnethinxCore01.h
 ATinterface.h
 /Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/source/ATinterface.h
+Demokit01.h
+/Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/source/Demokit01.h
 
 /Volumes/Data/VScode/GIT/OT_ATCommandSet_VScode/source/ATinterface.h
 

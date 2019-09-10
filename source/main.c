@@ -49,6 +49,7 @@ int main(void)
 	CyDelay(1000);	// Use only for debugging otherwise testmode acquire will not work. Testmode acquire is the preffered method. 
 					// To acquire in non-testmode use 'set ENABLE_ACQUIRE 0' in OpenOCD settings (CM4_kitprog.cfg)
 
+	//__enable_irq();ATcomm();
 	/* initialize hardware configuration */
 	init_cycfg_all();
 	

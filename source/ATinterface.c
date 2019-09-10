@@ -15,6 +15,7 @@
 #include "cycfg.h"
 #include "OnethinxCore01.h"
 #include "ATinterface.h"
+#include "Demokit01.h"
 
 extern volatile coreArguments_t coreArguments;
 coreStatus_t coreStatus;
@@ -38,7 +39,7 @@ sleepConfig_t sleepConfig =
 {
 	.sleepMode = modeDeepSleep,
 	.sleepCores = coresBoth,
-	.wakeUpPin = wakeUpPinHigh(true),
+	.wakeUpPin = wakeUpPinLow(false),
 	.wakeUpTime = wakeUpTimeOff
 };
 
@@ -342,7 +343,9 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                     
             }
             outputResponse(resp_ok, 0);
+            Cy_SysClk_ClkPathSetSource(2U, CY_SYSCLK_CLKPATH_IN_IMO);       // Set Clock MUX to IMO because Sleep will disable BLE ECO clock (ALTHF)
             LoRaWAN_Sleep(&sleepConfig);
+            Cy_SysClk_ClkPathSetSource(2U, CY_SYSCLK_CLKPATH_IN_ALTHF);     // Restore Clock MUX to BLE ECO clock (ALTHF)
             break;
         case cmd_help:
             outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
@@ -351,12 +354,18 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
 
 }
 
-
 void ATcomm(void)
 {
     if (loraState == lora_start)
     {
+        //Cy_GPIO_Pin_FastInit(LED_RED_PORT, LED_RED_PIN, CY_GPIO_DM_STRONG_IN_OFF, 1, LED_RED_HSIOM);
+        //Cy_GPIO_Pin_FastInit(LED_BLUE_PORT, LED_BLUE_PIN, CY_GPIO_DM_STRONG_IN_OFF, 0, LED_BLUE_HSIOM);
         LoRaWAN_Init(&coreConfig);
+        //CyDelay(1000);
+        //LED_R_SET(0);
+        //LED_B_SET(1);
+        //LoRaWAN_Sleep(&sleepConfig);
+        //LED_B_SET(0);
         outputResponse(resp_info, 0);
         //loraState = lora_idle;
     }
