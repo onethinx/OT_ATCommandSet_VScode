@@ -44,6 +44,9 @@ Connections:
     - 0: Hibernate
     - 1: Deep Sleep	
     - 2: Sleep
+- Wakeup IO:
+    - connect to external wakeup signal (voltage may not exceed module voltage) for wakeup on falling edge
+    - connect to Host TX for wakeup on TX activity
     
 ## Examples
 
