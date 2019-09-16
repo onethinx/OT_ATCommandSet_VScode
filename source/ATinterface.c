@@ -52,6 +52,7 @@ LoRaWAN_keys_t LoRaWAN_keys =
 uint8_t	cmdIDX = 0;
 uint8_t	cmdBUF[255];
 uint8_t	tmpBUF[255];
+uint8_t	rxBUF[255];
 uint8_t	tmpBUFIDX = 0;
 
 // Build AT command list, occurrences of 'partial duplicate commands' should come after the 'full command' eg: "RX" should come after "RX_LENGTH"
@@ -161,6 +162,21 @@ char * uint32toHexBuilder(uint32_t val, uint8_t idx)
     return tmpBUF;
 }
 
+char * bytestoHexBuilder(uint8_t * val, uint8_t length, uint8_t idx)
+{
+    if (idx != (uint8_t) -1) tmpBUFIDX = idx;
+    if ((length + tmpBUFIDX) > 127) return NULL;
+    for (int8_t cnt = 0; cnt < length; cnt++, tmpBUFIDX++)
+    {
+        tmpBUF[tmpBUFIDX] = (val[cnt] >> 4) & 0x0F;
+        tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+        tmpBUF[++tmpBUFIDX] = (val[cnt] >> 0) & 0x0F;
+        tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
+    }
+    tmpBUF[tmpBUFIDX] = 0;
+    return tmpBUF;
+}
+
 char * stringBuilder(char* string, uint8_t idx)
 {
     if (idx != (uint8_t) -1) tmpBUFIDX = idx;
@@ -201,10 +217,7 @@ void outputResponse(response_t response, uint32_t errorValue)
             stringBuilder(":", -1);
             uint16toDecimalBuilder(coreInfo.buildSecond, -1);
             stringBuilder(")\r\n: DevEUI: ", -1);
-            uint32_t devEUI = __builtin_bswap32(*(uint32_t *) &coreInfo.devEUI);
-            uint32toHexBuilder(devEUI, -1);
-            devEUI = __builtin_bswap32(*(uint32_t *) &coreInfo.devEUI[4]);
-            uint32toHexBuilder(devEUI, -1);
+            bytestoHexBuilder((uint8_t *) &coreInfo.devEUI, 8, -1);
             stringBuilder("\r\n: Version: ", -1);
             message = uint32toHexBuilder(coreStatus.system.version, -1);
             break;
@@ -316,10 +329,23 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             loraState = lora_sending;
             break;
         case cmd_rxlength:
-            outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
+            if (length != cmdLength) {
+                outputResponse(resp_invalidparam, 0);
+                return;
+            }
+            Cy_SCB_UART_PutString(UART_HW, uint16toDecimalBuilder((uint16_t) coreStatus.mac.bytesToRead, 0));
+            Cy_SCB_UART_PutString(UART_HW, "\r\n");
+            outputResponse(resp_ok, 0);
             break;
         case cmd_rx:
-            outputResponse((length != cmdLength)? resp_invalidparam: resp_ok, 0);
+        if (length != cmdLength) {
+                outputResponse(resp_invalidparam, 0);
+                return;
+            }
+            LoRaWAN_GetRXdata(rxBUF, coreStatus.mac.bytesToRead);
+            Cy_SCB_UART_PutString(UART_HW, bytestoHexBuilder(rxBUF, coreStatus.mac.bytesToRead, 0));
+            Cy_SCB_UART_PutString(UART_HW, "\r\n");
+            outputResponse(resp_ok, 0);
             break;
         case cmd_sleepmode:
             if ((length - cmdLength) != 2) {
@@ -361,13 +387,9 @@ void ATcomm(void)
         //Cy_GPIO_Pin_FastInit(LED_RED_PORT, LED_RED_PIN, CY_GPIO_DM_STRONG_IN_OFF, 1, LED_RED_HSIOM);
         //Cy_GPIO_Pin_FastInit(LED_BLUE_PORT, LED_BLUE_PIN, CY_GPIO_DM_STRONG_IN_OFF, 0, LED_BLUE_HSIOM);
         LoRaWAN_Init(&coreConfig);
-        //CyDelay(1000);
         //LED_R_SET(0);
         //LED_B_SET(1);
-        //LoRaWAN_Sleep(&sleepConfig);
-        //LED_B_SET(0);
         outputResponse(resp_info, 0);
-        //loraState = lora_idle;
     }
     if ((loraState != lora_idle) && (LoRaWAN_GetStatus().system.isBusy == false))
     {
