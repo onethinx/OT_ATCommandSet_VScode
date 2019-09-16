@@ -14,6 +14,15 @@ The following AT commands can be used with this AT commands firmware:
 | AT+RX               | [data]     | Show received data                   |
 | AT+SLEEPMODE [mode] | OK / Error | Set sleepmode                        |
 
+Connections:
+
+| Module   | Function      | To                                                         |
+|----------|---------------|------------------------------------------------------------|
+| P10_0    | Module RX     | Host UART TX (TTL level)                                   |
+| P10_1    | Module TX     | Host UART RX (TTL level)                                   |
+| P0_4     | Module wakeup | Host UART TX (TTL level) or external wakeup (falling edge) |
+
+
 ## Notes
 - All commands are terminated by "\r\n"
 - Sleep IO: 
@@ -35,6 +44,9 @@ The following AT commands can be used with this AT commands firmware:
     - 0: Hibernate
     - 1: Deep Sleep	
     - 2: Sleep
+- Wakeup IO:
+    - connect to external wakeup signal (voltage may not exceed module voltage) for wakeup on falling edge
+    - connect to Host TX for wakeup on TX activity
     
 ## Examples
 
