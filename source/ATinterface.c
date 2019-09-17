@@ -165,7 +165,7 @@ char * uint32toHexBuilder(uint32_t val, uint8_t idx)
 char * bytestoHexBuilder(uint8_t * val, uint8_t length, uint8_t idx)
 {
     if (idx != (uint8_t) -1) tmpBUFIDX = idx;
-    if ((length + tmpBUFIDX) > 127) return NULL;
+    if (((length << 1) + (uint16_t) tmpBUFIDX) > 254) return NULL;
     for (int8_t cnt = 0; cnt < length; cnt++, tmpBUFIDX++)
     {
         tmpBUF[tmpBUFIDX] = (val[cnt] >> 4) & 0x0F;
@@ -333,6 +333,7 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                 outputResponse(resp_invalidparam, 0);
                 return;
             }
+            coreStatus = LoRaWAN_GetStatus();
             Cy_SCB_UART_PutString(UART_HW, uint16toDecimalBuilder((uint16_t) coreStatus.mac.bytesToRead, 0));
             Cy_SCB_UART_PutString(UART_HW, "\r\n");
             outputResponse(resp_ok, 0);
@@ -342,6 +343,7 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                 outputResponse(resp_invalidparam, 0);
                 return;
             }
+            coreStatus = LoRaWAN_GetStatus();
             LoRaWAN_GetRXdata(rxBUF, coreStatus.mac.bytesToRead);
             Cy_SCB_UART_PutString(UART_HW, bytestoHexBuilder(rxBUF, coreStatus.mac.bytesToRead, 0));
             Cy_SCB_UART_PutString(UART_HW, "\r\n");
