@@ -9,7 +9,8 @@
         "cy_ble.h": "c",
         "cy_pdl.h": "c",
         "cycfg_platform.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "atinterface.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

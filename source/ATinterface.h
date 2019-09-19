@@ -1,3 +1,4 @@
+#define ATcommVersion   0x00000010
 
 extern void ATcomm(void);
 

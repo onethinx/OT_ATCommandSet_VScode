@@ -218,8 +218,11 @@ void outputResponse(response_t response, uint32_t errorValue)
             uint16toDecimalBuilder(coreInfo.buildSecond, -1);
             stringBuilder(")\r\n: DevEUI: ", -1);
             bytestoHexBuilder((uint8_t *) &coreInfo.devEUI, 8, -1);
-            stringBuilder("\r\n: Version: ", -1);
-            message = uint32toHexBuilder(coreStatus.system.version, -1);
+            stringBuilder("\r\n: Stack Version: ", -1);
+            uint32toHexBuilder(coreStatus.system.version, -1);
+            stringBuilder("\r\n: CMD Version: ", -1);
+            uint32toHexBuilder(ATcommVersion, -1);
+            message = stringBuilder("\r\nOK", -1);
             break;
         case resp_joining:
             message = "joining...";
@@ -371,6 +374,7 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                     
             }
             outputResponse(resp_ok, 0);
+            while (!Cy_SCB_IsTxComplete(UART_HW));                          // Wait till finished sending OK
             Cy_SysClk_ClkPathSetSource(2U, CY_SYSCLK_CLKPATH_IN_IMO);       // Set Clock MUX to IMO because Sleep will disable BLE ECO clock (ALTHF)
             LoRaWAN_Sleep(&sleepConfig);
             Cy_SysClk_ClkPathSetSource(2U, CY_SYSCLK_CLKPATH_IN_ALTHF);     // Restore Clock MUX to BLE ECO clock (ALTHF)
@@ -392,6 +396,7 @@ void ATcomm(void)
         //LED_R_SET(0);
         //LED_B_SET(1);
         outputResponse(resp_info, 0);
+        loraState = lora_idle;
     }
     if ((loraState != lora_idle) && (LoRaWAN_GetStatus().system.isBusy == false))
     {
