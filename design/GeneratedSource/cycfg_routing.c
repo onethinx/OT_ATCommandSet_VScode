@@ -1,8 +1,8 @@
 /*******************************************************************************
-* File Name: cycfg_peripherals.h
+* File Name: cycfg_routing.c
 *
 * Description:
-* Peripheral Hardware Block configuration
+* Establishes all necessary connections between hardware elements.
 * This file was automatically generated and should not be modified.
 * Device Configurator: 2.0.0.1483
 * Device Support Library (../../../VSCode_OnethinxPack_macOS/PDL_1.3.1.1499): 1.3.1.1499
@@ -24,34 +24,8 @@
 * limitations under the License.
 ********************************************************************************/
 
-#if !defined(CYCFG_PERIPHERALS_H)
-#define CYCFG_PERIPHERALS_H
+#include "cycfg_routing.h"
 
-#include "cycfg_notices.h"
-#include "cy_scb_uart.h"
-#include "cy_sysclk.h"
-#if defined (CY_USING_HAL)
-	#include "cyhal_hwmgr.h"
-#endif //defined (CY_USING_HAL)
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-#define UART_ENABLED 1U
-#define UART_HW SCB1
-#define UART_IRQ scb_1_interrupt_IRQn
-
-extern const cy_stc_scb_uart_config_t UART_config;
-#if defined (CY_USING_HAL)
-	extern const cyhal_resource_inst_t UART_obj;
-#endif //defined (CY_USING_HAL)
-
-void init_cycfg_peripherals(void);
-
-#if defined(__cplusplus)
+void init_cycfg_routing(void)
+{
 }
-#endif
-
-
-#endif /* CYCFG_PERIPHERALS_H */

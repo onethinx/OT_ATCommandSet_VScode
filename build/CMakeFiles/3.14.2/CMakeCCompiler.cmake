@@ -1,7 +1,7 @@
-set(CMAKE_C_COMPILER "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc")
+set(CMAKE_C_COMPILER "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-gcc-9.2.1")
 set(CMAKE_C_COMPILER_ARG1 "")
 set(CMAKE_C_COMPILER_ID "GNU")
-set(CMAKE_C_COMPILER_VERSION "8.2.1")
+set(CMAKE_C_COMPILER_VERSION "9.2.1")
 set(CMAKE_C_COMPILER_VERSION_INTERNAL "")
 set(CMAKE_C_COMPILER_WRAPPER "")
 set(CMAKE_C_STANDARD_COMPUTED_DEFAULT "11")
@@ -16,11 +16,11 @@ set(CMAKE_C_SIMULATE_VERSION "")
 
 
 
-set(CMAKE_AR "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-ar")
-set(CMAKE_C_COMPILER_AR "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc-ar")
-set(CMAKE_RANLIB "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-ranlib")
-set(CMAKE_C_COMPILER_RANLIB "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-gcc-ranlib")
-set(CMAKE_LINKER "/Applications/gcc-arm-none-eabi-8-2018-q4-major/bin/arm-none-eabi-ld")
+set(CMAKE_AR "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-ar")
+set(CMAKE_C_COMPILER_AR "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-gcc-ar")
+set(CMAKE_RANLIB "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-ranlib")
+set(CMAKE_C_COMPILER_RANLIB "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-gcc-ranlib")
+set(CMAKE_LINKER "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-ld")
 set(CMAKE_MT "")
 set(CMAKE_COMPILER_IS_GNUCC 1)
 set(CMAKE_C_COMPILER_LOADED 1)
@@ -69,7 +69,7 @@ endif()
 
 
 
-set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "/Applications/gcc-arm-none-eabi-8-2018-q4-major/lib/gcc/arm-none-eabi/8.2.1/include;/Applications/gcc-arm-none-eabi-8-2018-q4-major/lib/gcc/arm-none-eabi/8.2.1/include-fixed;/Applications/gcc-arm-none-eabi-8-2018-q4-major/arm-none-eabi/include")
+set(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include;/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/lib/gcc/arm-none-eabi/9.2.1/include-fixed;/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/gcc-arm-none-eabi-9-2019-q4-major/arm-none-eabi/include")
 set(CMAKE_C_IMPLICIT_LINK_LIBRARIES "")
 set(CMAKE_C_IMPLICIT_LINK_DIRECTORIES "")
 set(CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")

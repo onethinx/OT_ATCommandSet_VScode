@@ -99,9 +99,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.14.2/CMakeSystem.cmake"
   "CMakeFiles/feature_tests.c"
   "CMakeFiles/feature_tests.cxx"
-  "../config/cmake/arm-none-eabi-toolchain.cmake"
-  "../config/cmake/common.cmake"
-  "../config/cmake/cypress_peripheral_drivers_library.cmake"
+  "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/config/cmake/common.cmake"
+  "/Volumes/Data/VScode/GIT/VSCode_OnethinxPack_macOS/config/cmake/cypress_peripheral_drivers_library.cmake"
   )
 
 # The corresponding makefile is:
@@ -123,6 +122,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/MyApp.dir/DependInfo.cmake"
-  "CMakeFiles/MyApp.elf.dir/DependInfo.cmake"
+  "CMakeFiles/OT_ATCommandSet_VScode.dir/DependInfo.cmake"
+  "CMakeFiles/OT_ATCommandSet_VScode.elf.dir/DependInfo.cmake"
   )

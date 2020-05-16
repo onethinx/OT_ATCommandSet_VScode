@@ -6,47 +6,57 @@
         {
             "label": "PSoC Config",
             "type": "shell",
-            "args": [ "design.modus" ],
+            "args": [ "${workspaceRoot}/design/design.modus" ],
             "options": {
                 "cwd": "${workspaceRoot}/design"
             },
-            "windows": {  // Assuming modustoolbox is installed in C:/
-                "command": "C:/ModusToolbox_1.0/tools/device-configurator-1.0/device-configurator.exe"
-            },
-            "linux": {  // Assuming modustoolbox is installed in /opt
-                "command": "/opt/ModusToolbox_1.0/tools/device-configurator-1.0/device-configurator"
-            },
-            "osx": {
-                "command": "/Applications/ModusToolbox_1.0/tools/device-configurator-1.0/device-configurator"
-            },
+            "command": "${env:ONETHINX_PACK_LOC}/tools_2.0/device-configurator/device-configurator",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },   
+        {
+            "label": "PDL 1.3.1.1499 documentation",
+            "type": "shell",
+            "command": "open",
+            "args": ["${env:ONETHINX_PDL_LOC}/docs/pdl_api_reference_manual.html"],
         },
         {
-            "label": "Build All: Debug",
+            "label": "Check build",
             "type": "shell",
             "options": {
                 "cwd": "${workspaceRoot}/build"
             },
             "windows": {
-                "command": "C:/Program Files/CMake/bin/cmake.exe"
+                "command": "${env:ONETHINX_PACK_LOC}/config/scripts/check_build.bat ${workspaceFolderBasename}"
             },
             "linux": {
-                "command": "/usr/bin/cmake"
+                "command": "${env:ONETHINX_PACK_LOC}/config/scripts/check_build.bash ${workspaceFolderBasename}"
             },
             "osx": {
-                "command": "/Applications/CMake.app/Contents/bin/cmake"
+                "command": "${env:ONETHINX_PACK_LOC}/config/scripts/check_build.bash ${workspaceFolderBasename}"
+            }
+        },
+        {
+            "label": "UART Console",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build"
             },
-            "args": [
-                "--build",
-                ".",
-                "-j6",
-                "\"--config\" \"Debug\"",
-                "\"--target\" \"all\"", 
-                "\"--\" \"-j\" \"26\""
-            ]
+            
+            "windows": {
+                "command": "${env:ONETHINX_TOOLS_LOC}/comsniff",            // Nice tool from https://github.com/klarsys/comsniff
+                "args": ["-d 4","-b 19200"],                                 // -d portnum   -b baudrate
+            },
+            "linux": {
+                "command": "screen",
+                "args": ["/dev/tty.usbserial-A603TZRU","19200"]
+            },
+            "osx": {
+                "command": "screen",
+                "args": ["/dev/tty.usbserial-A603TZRU","19200"],
+            }
         }
     ]
 }

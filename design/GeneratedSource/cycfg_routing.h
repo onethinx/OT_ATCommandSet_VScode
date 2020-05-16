@@ -1,8 +1,8 @@
 /*******************************************************************************
-* File Name: cycfg_peripherals.h
+* File Name: cycfg_routing.h
 *
 * Description:
-* Peripheral Hardware Block configuration
+* Establishes all necessary connections between hardware elements.
 * This file was automatically generated and should not be modified.
 * Device Configurator: 2.0.0.1483
 * Device Support Library (../../../VSCode_OnethinxPack_macOS/PDL_1.3.1.1499): 1.3.1.1499
@@ -24,34 +24,22 @@
 * limitations under the License.
 ********************************************************************************/
 
-#if !defined(CYCFG_PERIPHERALS_H)
-#define CYCFG_PERIPHERALS_H
-
-#include "cycfg_notices.h"
-#include "cy_scb_uart.h"
-#include "cy_sysclk.h"
-#if defined (CY_USING_HAL)
-	#include "cyhal_hwmgr.h"
-#endif //defined (CY_USING_HAL)
+#if !defined(CYCFG_ROUTING_H)
+#define CYCFG_ROUTING_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#define UART_ENABLED 1U
-#define UART_HW SCB1
-#define UART_IRQ scb_1_interrupt_IRQn
-
-extern const cy_stc_scb_uart_config_t UART_config;
-#if defined (CY_USING_HAL)
-	extern const cyhal_resource_inst_t UART_obj;
-#endif //defined (CY_USING_HAL)
-
-void init_cycfg_peripherals(void);
+#include "cycfg_notices.h"
+void init_cycfg_routing(void);
+#define init_cycfg_connectivity() init_cycfg_routing()
+#define ioss_0_port_10_pin_0_HSIOM P10_0_SCB1_UART_RX
+#define ioss_0_port_10_pin_1_HSIOM P10_1_SCB1_UART_TX
 
 #if defined(__cplusplus)
 }
 #endif
 
 
-#endif /* CYCFG_PERIPHERALS_H */
+#endif /* CYCFG_ROUTING_H */

@@ -22,22 +22,27 @@ coreStatus_t coreStatus;
 coreInfo_t coreInfo;
 errorStatus_t coreErrorStatus;
 
-coreConfiguration_t coreConfig = {
-	.Join.KeysPtr = 		&LoRaWAN_keys,
-	.Join.DataRate =		DR_AUTO,
-	.Join.Power =			PWR_MAX,
-	.Join.MAXTries = 		100,
-	.Join.SubBand_1st =     EU_SUB_BANDS_DEFAULT,
-	.Join.SubBand_2nd =     EU_SUB_BANDS_DEFAULT,
-	.TX.Confirmed = 		false,
-	.TX.DataRate = 			DR_0,
-	.TX.Power = 			PWR_MAX,
-	.TX.FPort = 			1,
+coreConfiguration_t	coreConfig = {
+	.Join.KeysPtr = 			&LoRaWAN_keys,
+	.Join.DataRate =			DR_AUTO,
+	.Join.Power =				PWR_MAX,
+	.Join.MAXTries = 			100,
+    .Join.SubBand_1st =     	EU_SUB_BANDS_DEFAULT,
+	.Join.SubBand_2nd =     	EU_SUB_BANDS_DEFAULT,
+	.TX.Confirmed = 			false,
+	.TX.DataRate = 				DR_0,
+	.TX.Power = 			    PWR_MAX,
+	.TX.FPort = 				1,
+	.System.Idle.Mode = 		M0_DeepSleep,
+	.System.Idle.BleEcoON =		false,
+	.System.Idle.DebugON =		true,
 };
 
 sleepConfig_t sleepConfig =
 {
-	.sleepMode = modeDeepSleep,
+	.BleEcoON = false,
+	.DebugON = true,
+    .sleepMode = modeDeepSleep,
 	.sleepCores = coresBoth,
 	.wakeUpPin = wakeUpPinLow(false),
 	.wakeUpTime = wakeUpTimeOff
@@ -50,9 +55,9 @@ LoRaWAN_keys_t LoRaWAN_keys =
 };
 
 uint8_t	cmdIDX = 0;
-uint8_t	cmdBUF[255];
-uint8_t	tmpBUF[255];
-uint8_t	rxBUF[255];
+char	cmdBUF[255];
+char	tmpBUF[255];
+char	rxBUF[255];
 uint8_t	tmpBUFIDX = 0;
 
 // Build AT command list, occurrences of 'partial duplicate commands' should come after the 'full command' eg: "RX" should come after "RX_LENGTH"
@@ -135,7 +140,7 @@ char * uint16toDecimalBuilder(uint16_t val, uint8_t idx)
     tmpBUFIDX += incr;
     tmpBUF[tmpBUFIDX] = '0' + val;
     tmpBUF[++tmpBUFIDX] = 0;
-    return tmpBUF;
+    return (char *) tmpBUF;
 }
 
 char * uint32toHexBuilder(uint32_t val, uint8_t idx)
@@ -159,7 +164,7 @@ char * uint32toHexBuilder(uint32_t val, uint8_t idx)
     tmpBUF[++tmpBUFIDX] = (val >> 0) & 0x0F;
     tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
     tmpBUF[++tmpBUFIDX] = 0;
-    return tmpBUF;
+    return (char *) tmpBUF;
 }
 
 char * bytestoHexBuilder(uint8_t * val, uint8_t length, uint8_t idx)
@@ -174,19 +179,19 @@ char * bytestoHexBuilder(uint8_t * val, uint8_t length, uint8_t idx)
         tmpBUF[tmpBUFIDX] += (tmpBUF[tmpBUFIDX] > 9)? 55 : '0';
     }
     tmpBUF[tmpBUFIDX] = 0;
-    return tmpBUF;
+    return (char *) tmpBUF;
 }
 
 char * stringBuilder(char* string, uint8_t idx)
 {
     if (idx != (uint8_t) -1) tmpBUFIDX = idx;
-    for (; tmpBUFIDX < 255; tmpBUFIDX)
+    for (; tmpBUFIDX < 255;)
     {
         if (* string == 0) break;
         tmpBUF[tmpBUFIDX++] = * string++;
     }
     tmpBUF[tmpBUFIDX] = 0;
-    return tmpBUF;
+    return (char *) tmpBUF;
 }
 
 void outputResponse(response_t response, uint32_t errorValue)
@@ -263,7 +268,7 @@ void outputResponse(response_t response, uint32_t errorValue)
     Cy_SCB_UART_PutString(UART_HW, "\r\n");
 }
 
-response_t HEXtoBytes(char * source, uint8_t * dest, uint8_t byteSize)
+response_t HEXtoBytes(char * source, char * dest, uint8_t byteSize)
 {
     uint8_t cnt;
     for(cnt = 0; cnt < byteSize; cnt++)
@@ -312,9 +317,9 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                 outputResponse(resp_invalidparam, 0);
                 return;
             }
-            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 3], (uint8_t *) &LoRaWAN_keys.OTAA_10x.DevEui, 8)) != resp_ok) return outputResponse(retErr, 0);
-            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 20], (uint8_t *) &LoRaWAN_keys.OTAA_10x.AppEui, 8)) != resp_ok) return outputResponse(retErr, 0);
-            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 37], (uint8_t *) &LoRaWAN_keys.OTAA_10x.AppKey, 16)) != resp_ok) return outputResponse(retErr, 0);
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 3], (char *) &LoRaWAN_keys.OTAA_10x.DevEui, 8)) != resp_ok) return outputResponse(retErr, 0);
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 20], (char *) &LoRaWAN_keys.OTAA_10x.AppEui, 8)) != resp_ok) return outputResponse(retErr, 0);
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 37], (char *) &LoRaWAN_keys.OTAA_10x.AppKey, 16)) != resp_ok) return outputResponse(retErr, 0);
             LoRaWAN_keys.KeyType = OTAA_10x_key;
             LoRaWAN_keys.PublicNetwork = (cmdBUF[cmdLength + 1] == '0')? false : true;
             outputResponse(resp_ok, 0);
@@ -326,8 +331,8 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
             break;
         case cmd_tx:
             length = (length - (cmdLength + 1)) >> 1;
-            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], (uint8_t *) &tmpBUF, length)) != resp_ok) return outputResponse(retErr, 0);
-            LoRaWAN_Send(tmpBUF, length, false);
+            if ((retErr = HEXtoBytes(&cmdBUF[cmdLength + 1], tmpBUF, length)) != resp_ok) return outputResponse(retErr, 0);
+            LoRaWAN_Send((uint8_t *) tmpBUF, length, false);
             outputResponse(resp_sending, 0);
             loraState = lora_sending;
             break;
@@ -347,8 +352,8 @@ void execCommand(command_t command, uint8_t length, uint8_t cmdLength)
                 return;
             }
             coreStatus = LoRaWAN_GetStatus();
-            LoRaWAN_GetRXdata(rxBUF, coreStatus.mac.bytesToRead);
-            Cy_SCB_UART_PutString(UART_HW, bytestoHexBuilder(rxBUF, coreStatus.mac.bytesToRead, 0));
+            LoRaWAN_GetRXdata((uint8_t *) rxBUF, coreStatus.mac.bytesToRead);
+            Cy_SCB_UART_PutString(UART_HW, bytestoHexBuilder((uint8_t *) rxBUF, coreStatus.mac.bytesToRead, 0));
             Cy_SCB_UART_PutString(UART_HW, "\r\n");
             outputResponse(resp_ok, 0);
             break;

@@ -1,8 +1,8 @@
 /*******************************************************************************
-* File Name: cycfg_peripherals.h
+* File Name: cycfg_system.h
 *
 * Description:
-* Peripheral Hardware Block configuration
+* System configuration
 * This file was automatically generated and should not be modified.
 * Device Configurator: 2.0.0.1483
 * Device Support Library (../../../VSCode_OnethinxPack_macOS/PDL_1.3.1.1499): 1.3.1.1499
@@ -24,12 +24,12 @@
 * limitations under the License.
 ********************************************************************************/
 
-#if !defined(CYCFG_PERIPHERALS_H)
-#define CYCFG_PERIPHERALS_H
+#if !defined(CYCFG_SYSTEM_H)
+#define CYCFG_SYSTEM_H
 
 #include "cycfg_notices.h"
-#include "cy_scb_uart.h"
 #include "cy_sysclk.h"
+#include "cy_ble_clk.h"
 #if defined (CY_USING_HAL)
 	#include "cyhal_hwmgr.h"
 #endif //defined (CY_USING_HAL)
@@ -38,20 +38,27 @@
 extern "C" {
 #endif
 
-#define UART_ENABLED 1U
-#define UART_HW SCB1
-#define UART_IRQ scb_1_interrupt_IRQn
+#define srss_0_clock_0_ENABLED 1U
+#define srss_0_clock_0_althf_0_ENABLED 1U
+#define srss_0_clock_0_hfclk_0_ENABLED 1U
+#define CY_CFG_SYSCLK_CLKHF0 0UL
+#define srss_0_clock_0_imo_0_ENABLED 1U
+#define srss_0_clock_0_pathmux_0_ENABLED 1U
+#define srss_0_clock_0_pathmux_2_ENABLED 1U
+#define srss_0_clock_0_periclk_0_ENABLED 1U
 
-extern const cy_stc_scb_uart_config_t UART_config;
 #if defined (CY_USING_HAL)
-	extern const cyhal_resource_inst_t UART_obj;
+	extern const cyhal_resource_inst_t srss_0_clock_0_pathmux_0_obj;
+#endif //defined (CY_USING_HAL)
+#if defined (CY_USING_HAL)
+	extern const cyhal_resource_inst_t srss_0_clock_0_pathmux_2_obj;
 #endif //defined (CY_USING_HAL)
 
-void init_cycfg_peripherals(void);
+void init_cycfg_system(void);
 
 #if defined(__cplusplus)
 }
 #endif
 
 
-#endif /* CYCFG_PERIPHERALS_H */
+#endif /* CYCFG_SYSTEM_H */

@@ -1,3 +1,2 @@
 # Hashes of file build rules.
-9e7db9ef15fbef6bdea87f015aeaf281 CMakeFiles/MyApp
-4092aeae5d2b1551ac1d884365b90755 MyApp_signed.elf
+72a9ed0e52e44fad34029d958bfc2d43 CMakeFiles/OT_ATCommandSet_VScode
